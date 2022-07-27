@@ -1,9 +1,9 @@
 /* import prisma from './../../src/database.js'; */
-import createRecommendationData from './recommendationFactory.js';
+import { createRecommendation } from './recommendationFactory.js';
 
 export async function createScenaryWithRecommendation () {
 
-    const recommendation = await createRecommendationData();
+    const recommendation = await createRecommendation();
 
     return {
 

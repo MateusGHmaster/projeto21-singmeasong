@@ -1,7 +1,7 @@
-/* import prisma from '../../src/database.js'; */
+import prisma from '../../src/database.js';
 import { faker } from '@faker-js/faker';
 
-export default async function createRecommendationData () {
+export async function createRecommendationData () {
     
     const recommendationData = {
 
@@ -11,5 +11,14 @@ export default async function createRecommendationData () {
     };
 
     return recommendationData;
+
+}
+
+export async function createRecommendation () {
+    
+    const recommendationData = await createRecommendationData();
+    const recommendation = await prisma.recommendation.create({ data: recommendationData });
+
+    return recommendation;
 
 }
