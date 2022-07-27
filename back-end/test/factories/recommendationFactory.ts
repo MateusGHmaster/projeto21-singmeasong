@@ -1,7 +1,7 @@
 /* import prisma from '../../src/database.js'; */
 import { faker } from '@faker-js/faker';
 
-export default async function createRecommendation () {
+export default async function createRecommendationData () {
     
     const recommendationData = {
 
