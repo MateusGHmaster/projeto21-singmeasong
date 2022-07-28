@@ -22,3 +22,12 @@ export async function createRecommendation () {
     return recommendation;
 
 }
+
+export async function createRecommendationWithScore (score: number) {
+
+    const recommendationData = await createRecommendationData();
+    const recommendation = await prisma.recommendation.create({ data: { ...recommendationData, score: score } });
+  
+    return recommendation;
+    
+}

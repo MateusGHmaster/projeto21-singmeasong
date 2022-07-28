@@ -1,6 +1,7 @@
 import app from './../src/app.js';
 import prisma from '../src/database.js';
 import { createRecommendationData, createRecommendation } from './factories/recommendationFactory.js';
+import { createScenaryWithScoredRecommendation, createScenaryWithBelow5ScoreRecommendation } from './factories/scenaryFactory.js';
 import supertest from 'supertest';
 /* import { faker } from '@faker-js/faker'; */
 
@@ -69,8 +70,49 @@ describe('upvote recommendation', () => {
 
 });
 
-afterAll(async () => {
+describe('downvote recommendation', () => {
 
-  await prisma.$disconnect();
+    it('should remove one point from recommendation, given a downvote', async () => {
+
+        const { recommendation } = await createScenaryWithScoredRecommendation();
+        const response = await supertest(app).post(`/recommendations/${recommendation.id}/downvote`);
+    
+        expect(response.status).toBe(200);
+    
+        const savedRecommendation = await prisma.recommendation.findFirst({ where: { name: recommendation.name } });
+    
+        expect(savedRecommendation.score).toBe(2);
+
+    });
+  
+    it('should return 404, given an invalid id', async () => {
+        
+        const response = await supertest(app).post('/recommendations/1/downvote');
+    
+        expect(response.status).toBe(404);
+
+    });
+
+    it ('should remove recommendation, given points/score below 5', async () => {
+
+        const { recommendation } = await createScenaryWithBelow5ScoreRecommendation();
+        const response = await supertest(app).post(`/recommendations/${recommendation.id}/downvote`);
+
+        expect(response.status).toBe(200);
+
+        const savedRecommendation = await prisma.recommendation.findFirst({ where: { name: recommendation.name } });
+
+        expect(savedRecommendation).toBeNull();
+
+    });
 
 });
+
+afterAll(async () => {
+
+    await prisma.$disconnect();
+
+});
+
+
+/* TEMPLATE = it ('should', async () => {}); */
