@@ -1,7 +1,7 @@
 import app from './../src/app.js';
 import prisma from '../src/database.js';
 import { createRecommendationData, createRecommendation } from './factories/recommendationFactory.js';
-import { createScenaryWithScoredRecommendation, createScenaryWithBelow5ScoreRecommendation } from './factories/scenaryFactory.js';
+import { createScenaryWithScoredRecommendation, createScenaryWithBelow5ScoreRecommendation, createScenaryWithRecomendations } from './factories/scenaryFactory.js';
 import supertest from 'supertest';
 /* import { faker } from '@faker-js/faker'; */
 
@@ -108,6 +108,20 @@ describe('downvote recommendation', () => {
 
 });
 
+describe('get recommendations', () => {
+
+    it('should get the last 10 recommendations, given a get', async () => {
+        
+        const scenaryRecommendations = await createScenaryWithRecomendations(15);
+        const response = await supertest(app).get('/recommendations/');
+    
+        expect(response.body.length).toBe(10);
+
+    });
+
+})
+  
+
 afterAll(async () => {
 
     await prisma.$disconnect();
@@ -116,3 +130,4 @@ afterAll(async () => {
 
 
 /* TEMPLATE = it ('should', async () => {}); */
+

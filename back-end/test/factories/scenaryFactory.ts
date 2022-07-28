@@ -13,13 +13,29 @@ export async function createScenaryWithRecommendation () {
     
 }
 
+export async function createScenaryWithRecomendations (quantity: number) {
+    
+    const scenaryRecommendations = [];
+
+    for (let i = 0; i < quantity; i ++) {
+
+        const recommendation = await createRecommendation();
+
+        scenaryRecommendations.push(recommendation);
+
+    }
+
+    return scenaryRecommendations;
+
+}
+
 export async function createScenaryWithScoredRecommendation () {
 
     const recommendation = await createRecommendationWithScore(3);
 
     return { 
         
-        recommendation 
+        recommendation
     
     };
 
@@ -31,7 +47,7 @@ export async function createScenaryWithBelow5ScoreRecommendation () {
 
     return { 
         
-        recommendation 
+        recommendation
     
     };
 
