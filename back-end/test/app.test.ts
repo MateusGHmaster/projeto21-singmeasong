@@ -119,6 +119,15 @@ describe('get recommendations', () => {
 
     });
 
+    it("should get a recommendation, given an id", async () => {
+        
+        const scenaryRecommendation = await createScenaryWithRecomendations(1);
+        const response = await supertest(app).get(`/recommendations/${scenaryRecommendation[0].id}`);
+    
+        expect(response.body.id).toBe(scenaryRecommendation[0].id);
+
+    }); 
+
 })
   
 
@@ -128,6 +137,4 @@ afterAll(async () => {
 
 });
 
-
 /* TEMPLATE = it ('should', async () => {}); */
-
