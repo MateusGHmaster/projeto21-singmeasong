@@ -42,6 +42,18 @@ describe('post new recommendation', () => {
 
     });
 
+    it('should return 409, given already in use name', async () => {
+        
+        const recommendationData = await createRecommendationData();
+        
+        await supertest(app).post('/recommendations').send(recommendationData);
+        
+        const response = await supertest(app).post('/recommendations').send(recommendationData);
+    
+        expect(response.status).toBe(409);
+
+    });
+
 });
 
 describe('upvote recommendation', () => {
@@ -119,7 +131,7 @@ describe('get recommendations', () => {
 
     });
 
-    it("should get a recommendation, given an id", async () => {
+    it('should get a recommendation, given an id', async () => {
         
         const scenaryRecommendation = await createScenaryWithRecomendations(1);
         const response = await supertest(app).get(`/recommendations/${scenaryRecommendation[0].id}`);
@@ -128,8 +140,43 @@ describe('get recommendations', () => {
 
     }); 
 
-})
-  
+    it('should return 404, given an invalid id', async () => {
+
+        const response = await supertest(app).get(`/recommendations/1`);
+    
+        expect(response.status).toBe(404);
+
+    });
+
+    it('should get a random recommendation', async () => {
+        
+        const scenaryRecommendation = await createScenaryWithRecomendations(10);
+        const response = await supertest(app).get(`/recommendations/random`);
+    
+        expect(response.body).toHaveProperty('name');
+
+    });
+
+    it('should return 404, given there is no registered music', async () => {
+
+        const response = await supertest(app).get(`/recommendations/random`);
+    
+        expect(response.status).toBe(404);
+
+    });
+
+    it('should get top 3 recommendations', async () => {
+    
+        const scenaryRecommendations = await createScenaryWithRecomendations(6);
+        const response = await supertest(app).get(`/recommendations/top/3`);
+    
+        expect(response.body.length).toBe(3);
+        expect(response.body[0].score).toBeGreaterThanOrEqual(response.body[1].score);
+        expect(response.body[1].score).toBeGreaterThanOrEqual(response.body[2].score);
+    
+    });
+
+});  
 
 afterAll(async () => {
 

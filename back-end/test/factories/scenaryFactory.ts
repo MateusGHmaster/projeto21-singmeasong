@@ -1,7 +1,7 @@
 /* import prisma from './../../src/database.js'; */
 import { createRecommendation, createRecommendationWithScore } from './recommendationFactory.js';
 
-export async function createScenaryWithRecommendation () {
+/* export async function createScenaryWithRecommendation () {
 
     const recommendation = await createRecommendation();
 
@@ -11,7 +11,7 @@ export async function createScenaryWithRecommendation () {
 
     };
     
-}
+} */
 
 export async function createScenaryWithRecomendations (quantity: number) {
     
