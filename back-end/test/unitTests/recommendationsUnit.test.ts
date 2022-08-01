@@ -119,3 +119,168 @@ describe('downvote recommendations', () => {
     });
 
 });
+
+describe('get recommendations', () => {
+
+    it('get all recommendations', async () => {
+
+        const recommendations = [
+            {
+                id: 1,
+                name: faker.lorem.words(3),
+                youtubeLink: 'https://youtu.be/zW-AIXAnLcE',
+                score: 5
+            },
+            {
+                id: 2,
+                name: faker.lorem.words(3),
+                youtubeLink: 'https://youtu.be/zW-AIXAnLcE',
+                score: 10
+            },
+            {
+                id: 3,
+                name: faker.lorem.words(3),
+                youtubeLink: 'https://youtu.be/zW-AIXAnLcE',
+                score: 124
+            }
+        ];
+        const findAll = jest.spyOn(recommendationRepository, 'findAll').mockResolvedValueOnce(recommendations);
+    
+        await recommendationService.get();
+
+        expect(findAll).toBeCalledTimes(1);
+
+    });
+  
+    it('get the top recommendations', async () => {
+
+        const getAmountByScore = jest.spyOn(recommendationRepository, 'getAmountByScore').mockResolvedValueOnce([]);
+    
+        await recommendationService.getTop(0);
+
+        expect(getAmountByScore).toBeCalledTimes(1);
+
+    });
+  
+    it('should get a random recommendation, on the 30% tier', async () => {
+
+        const recommendations = [
+            {
+                id: 1,
+                name: faker.lorem.words(3),
+                youtubeLink: 'https://youtu.be/zW-AIXAnLcE',
+                score: 5
+            },
+            {
+                id: 2,
+                name: faker.lorem.words(3),
+                youtubeLink: 'https://youtu.be/zW-AIXAnLcE',
+                score: 100
+            }
+        ];
+        
+        jest.spyOn(Math, 'random').mockReturnValueOnce(0.9);
+        jest.spyOn(recommendationRepository, 'findAll').mockResolvedValueOnce([recommendations[0]]);
+    
+        const result = await recommendationService.getRandom();
+
+        expect(result.score).toEqual(recommendations[0].score);
+
+    });
+  
+    it('should get a random recommendation, on the 70% tier', async () => {
+
+        const recommendations = [
+            {
+                id: 1,
+                name: faker.lorem.words(3),
+                youtubeLink: 'https://youtu.be/zW-AIXAnLcE',
+                score: 5
+            },
+            {
+                id: 2,
+                name: faker.lorem.words(3),
+                youtubeLink: 'https://youtu.be/zW-AIXAnLcE',
+                score: 100
+            }
+        ];
+
+        jest.spyOn(Math, 'random').mockReturnValueOnce(0.5);
+        jest.spyOn(recommendationRepository, 'findAll').mockResolvedValueOnce([recommendations[1]]);
+    
+        const result = await recommendationService.getRandom();
+
+        expect(result.score).toEqual(recommendations[1].score);
+
+    });
+  
+    it('should get a random recommendation, given a score bellow or equal 10, on the 100% tier', async () => {
+
+        const recommendations = [
+            {
+                id: 1,
+                name: faker.lorem.words(3),
+                youtubeLink: 'https://youtu.be/zW-AIXAnLcE',
+                score: 5
+            },
+            {
+                id: 2,
+                name: faker.lorem.words(3),
+                youtubeLink: 'https://youtu.be/zW-AIXAnLcE',
+                score: 10
+            }
+        ];
+
+        jest.spyOn(Math, 'random').mockReturnValueOnce(0.9);
+        jest.spyOn(recommendationRepository, 'findAll').mockResolvedValueOnce(recommendations);
+    
+        const result = await recommendationService.getRandom();
+
+        expect(result).not.toBeNull();
+
+    });
+  
+    it('should get a random recommendation, given score above 10, on the 100% tier', async () => {
+
+        const recommendations = [
+            {
+                id: 1,
+                name: faker.lorem.words(3),
+                youtubeLink: 'https://youtu.be/zW-AIXAnLcE',
+                score: 100
+            },
+            {
+                id: 2,
+                name: faker.lorem.words(3),
+                youtubeLink: 'https://youtu.be/zW-AIXAnLcE',
+                score: 200
+            }
+        ];
+
+        jest.spyOn(Math, 'random').mockReturnValueOnce(0.9);
+        jest.spyOn(recommendationRepository, 'findAll').mockResolvedValueOnce(recommendations);
+    
+        const result = await recommendationService.getRandom();
+
+        expect(result).not.toBeNull();
+
+    });
+  
+    it('should fail to get a random recommendation', async () => {
+
+        const recommendation = [];
+
+        jest.spyOn(Math, 'random').mockReturnValueOnce(0.9);
+        jest.spyOn(recommendationRepository, 'findAll').mockResolvedValue(recommendation);
+    
+        return expect(recommendationService.getRandom()).rejects.toEqual({
+
+            type: 'not_found',
+            message: ''
+
+        });
+
+    });
+    
+});
+
