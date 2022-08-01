@@ -44,3 +44,40 @@ describe('insert recommendations', () => {
     });
 
 });
+
+describe('upvote recommendations', () => {
+
+    it('should add 1 point to recommendation score, given an upvote', async () => {
+
+        const recommendation = {
+
+            id: 1,
+            name: faker.lorem.words(3),
+            youtubeLink: 'https://youtu.be/zW-AIXAnLcE',
+            score: 5
+
+        };
+    
+        jest.spyOn(recommendationRepository, 'find').mockResolvedValueOnce(recommendation);
+        jest.spyOn(recommendationRepository, 'updateScore').mockResolvedValueOnce({ ...recommendation, score: 6 });
+    
+        await recommendationService.upvote(recommendation.id);
+
+        expect(recommendationRepository.updateScore).toBeCalledTimes(1);
+
+    });
+  
+    it('should fail to add 1 point to recommendation score, given an inexisting id', async () => {
+
+        jest.spyOn(recommendationRepository, 'find').mockResolvedValueOnce(null);
+    
+        expect(recommendationService.upvote(100)).rejects.toEqual({
+
+            type: 'not_found',
+            message: ''
+
+        });
+
+    });
+
+});
