@@ -284,3 +284,17 @@ describe('get recommendations', () => {
     
 });
 
+describe('delete all recommendations', () => {
+
+    it('should delete all recommendations', async () => {
+
+        const deleteAllRecommendations = jest.spyOn(recommendationRepository, 'deleteAllRecommendations').mockReturnThis();
+    
+        await recommendationService.deleteAllRecommendationsService();
+
+        expect(deleteAllRecommendations).toBeCalledTimes(1);
+
+    });
+
+});
+
