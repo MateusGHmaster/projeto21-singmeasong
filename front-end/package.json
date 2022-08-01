@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@faker-js/faker": "^7.3.0",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.1.1",
     "@testing-library/user-event": "^13.5.0",
@@ -42,6 +41,8 @@
     ]
   },
   "devDependencies": {
-    "cypress": "^10.3.1"
+    "@faker-js/faker": "^7.3.0",
+    "cypress": "^10.3.1",
+    "eslint": "^8.21.0"
   }
 }
